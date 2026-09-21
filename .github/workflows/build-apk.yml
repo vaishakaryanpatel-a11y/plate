@@ -184,10 +184,10 @@ jobs:
 
       - name: Verify APK permissions
         run: |
-          unzip -p build/app/outputs/flutter-apk/app-release.apk AndroidManifest.xml \
-            | strings \
-            | grep -iE 'activity_recognition|post_notifications' \
-            || (echo "MISSING PERMISSION" && exit 1)
+          AAPT2=$(find "$ANDROID_HOME/build-tools" -name aapt2 -type f | sort -V | tail -n 1)
+          PERMISSIONS=$("$AAPT2" dump badging build/app/outputs/flutter-apk/app-release.apk)
+          echo "$PERMISSIONS" | grep -q "android.permission.ACTIVITY_RECOGNITION"
+          echo "$PERMISSIONS" | grep -q "android.permission.POST_NOTIFICATIONS"
 
       - name: Stage artifact
         run: |
