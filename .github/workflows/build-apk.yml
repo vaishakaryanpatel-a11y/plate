@@ -113,6 +113,11 @@ jobs:
                   text = text[:match.start()] + block + text[match.end():]
               else:
                   text += "\n\nandroid {\n    " + block.replace("\n", "\n    ") + "\n}\n"
+          if "jvmTarget = '17'" not in text:
+              kotlin_options = "\n\n    kotlinOptions {\n        jvmTarget = '17'\n    }"
+              match = re.search(r"compileOptions\s*\{.*?\}", text, re.DOTALL)
+              if match:
+                  text = text[:match.end()] + kotlin_options + text[match.end():]
           if "multiDexEnabled true" not in text:
               text = text.replace("defaultConfig {", "defaultConfig {\n        multiDexEnabled true", 1)
           if "desugar_jdk_libs" not in text:
