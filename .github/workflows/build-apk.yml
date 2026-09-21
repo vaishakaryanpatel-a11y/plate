@@ -118,6 +118,15 @@ jobs:
               match = re.search(r"compileOptions\s*\{.*?\}", text, re.DOTALL)
               if match:
                   text = text[:match.end()] + kotlin_options + text[match.end():]
+          if "KotlinCompile" not in text:
+              text += """
+
+          tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+              kotlinOptions {
+                  jvmTarget = "17"
+              }
+          }
+          """
           if "multiDexEnabled true" not in text:
               text = text.replace("defaultConfig {", "defaultConfig {\n        multiDexEnabled true", 1)
           if "desugar_jdk_libs" not in text:
