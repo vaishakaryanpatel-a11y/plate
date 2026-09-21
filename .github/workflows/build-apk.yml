@@ -164,6 +164,7 @@ jobs:
           text = manifest.read_text()
           permissions = [
               "android.permission.ACTIVITY_RECOGNITION",
+              "android.permission.POST_NOTIFICATIONS",
               "android.permission.INTERNET",
           ]
           additions = "".join(
@@ -186,8 +187,9 @@ jobs:
         run: |
           AAPT2=$(find "$ANDROID_HOME/build-tools" -name aapt2 -type f | sort -V | tail -n 1)
           PERMISSIONS=$("$AAPT2" dump badging build/app/outputs/flutter-apk/app-release.apk)
-          echo "$PERMISSIONS" | grep -q "android.permission.ACTIVITY_RECOGNITION"
-          echo "$PERMISSIONS" | grep -q "android.permission.POST_NOTIFICATIONS"
+          echo "$PERMISSIONS"
+          echo "$PERMISSIONS" | grep -q "android.permission.ACTIVITY_RECOGNITION" || exit 1
+          echo "$PERMISSIONS" | grep -q "android.permission.POST_NOTIFICATIONS" || exit 1
 
       - name: Stage artifact
         run: |
