@@ -148,6 +148,27 @@ jobs:
               root.write_text(text)
           PY
 
+      - name: Patch AndroidManifest permissions
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          manifest = Path("android/app/src/main/AndroidManifest.xml")
+          text = manifest.read_text()
+          permissions = [
+              "android.permission.ACTIVITY_RECOGNITION",
+              "android.permission.INTERNET",
+          ]
+          additions = "".join(
+              f'    <uses-permission android:name="{permission}"/>\n'
+              for permission in permissions
+              if permission not in text
+          )
+          if additions:
+              text = text.replace("<application", additions + "\n    <application", 1)
+              manifest.write_text(text)
+          PY
+
       - name: Install dependencies
         run: flutter pub get
 
