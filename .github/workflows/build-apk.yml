@@ -89,6 +89,13 @@ jobs:
                        hanging_leg_raise cable_crunch; do
             [ -f "assets/models/$model.glb" ] || printf '\x00' > "assets/models/$model.glb"
           done
+          if [ "$(stat -c %s assets/sounds/water_drop.mp3)" -lt 2000 ]; then
+            sudo apt-get update -qq
+            sudo apt-get install -y sox libsox-fmt-mp3
+            sox -n -r 44100 -c 1 -b 16 assets/sounds/water_drop.mp3 \
+              synth 0.32 sine 1200 vol 0.35 fade 0.005 0.32 0.28 \
+              pitch -700 gain -n -3
+          fi
           cp assets/sounds/water_drop.mp3 android/app/src/main/res/raw/water_drop.mp3
 
       - name: Patch Android build config
@@ -174,6 +181,13 @@ jobs:
 
       - name: Build release APK
         run: flutter build apk --release
+
+      - name: Verify APK permissions
+        run: |
+          unzip -p build/app/outputs/flutter-apk/app-release.apk AndroidManifest.xml \
+            | strings \
+            | grep -iE 'activity_recognition|post_notifications' \
+            || (echo "MISSING PERMISSION" && exit 1)
 
       - name: Stage artifact
         run: |

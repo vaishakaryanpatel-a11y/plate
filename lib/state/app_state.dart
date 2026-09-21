@@ -6,6 +6,7 @@ import '../models/meal_entry.dart';
 import '../models/user_profile.dart';
 import '../services/storage_service.dart';
 import '../services/step_service.dart';
+import '../services/notification_service.dart';
 
 class AppState extends ChangeNotifier {
   AppState(this.storage) : _steps = StepService();
@@ -22,6 +23,7 @@ class AppState extends ChangeNotifier {
   int get steps => _todaySteps;
 
   Future<void> bootstrap() async {
+    await NotificationService.instance.scheduleWaterReminders();
     final today = DateTime.now().toIso8601String().substring(0, 10);
     final baseline = storage.stepsBaselineDate == today ? storage.stepsBaseline : 0;
     _stepsSubscription = _steps.stepsStream.listen((value) {
@@ -39,6 +41,17 @@ class AppState extends ChangeNotifier {
 
   Future<void> addWater() async {
     await storage.saveWaterCount(waterCount + 1);
+    notifyListeners();
+  }
+
+  Future<void> undoWater() async {
+    if (waterCount == 0) return;
+    await storage.saveWaterCount(waterCount - 1);
+    notifyListeners();
+  }
+
+  Future<void> resetWaterToday() async {
+    await storage.saveWaterCount(0);
     notifyListeners();
   }
 
