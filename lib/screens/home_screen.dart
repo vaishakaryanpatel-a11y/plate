@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../state/app_state.dart';
+import 'scan_screen.dart';
 import '../widgets/ring_progress.dart';
 import '../widgets/section_card.dart';
 
@@ -54,7 +55,22 @@ class HomeScreen extends StatelessWidget {
           Text("Today's meals", style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 8),
           if (state.meals.isEmpty)
-            const SectionCard(child: Text('No meals logged yet. Your meals will appear here.'))
+            SectionCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('No meals logged yet. Your meals will appear here.'),
+                  const SizedBox(height: 12),
+                  FilledButton.icon(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const ScanScreen()),
+                    ),
+                    icon: const Icon(Icons.camera_alt),
+                    label: const Text('Scan a plate'),
+                  ),
+                ],
+              ),
+            )
           else
             ...state.meals.map((meal) => ListTile(title: Text(meal.name), trailing: Text('${meal.calories} kcal'))),
         ],

@@ -165,6 +165,7 @@ jobs:
           permissions = [
               "android.permission.ACTIVITY_RECOGNITION",
               "android.permission.POST_NOTIFICATIONS",
+              "android.permission.CAMERA",
               "android.permission.INTERNET",
           ]
           additions = "".join(
@@ -190,6 +191,7 @@ jobs:
           echo "$PERMISSIONS"
           echo "$PERMISSIONS" | grep -q "android.permission.ACTIVITY_RECOGNITION" || exit 1
           echo "$PERMISSIONS" | grep -q "android.permission.POST_NOTIFICATIONS" || exit 1
+          echo "$PERMISSIONS" | grep -q "android.permission.CAMERA" || exit 1
 
       - name: Stage artifact
         run: |

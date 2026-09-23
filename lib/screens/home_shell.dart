@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'home_screen.dart';
+import 'scan_screen.dart';
 import 'steps_screen.dart';
 import 'water_screen.dart';
 
@@ -18,9 +19,10 @@ class _HomeShellState extends State<HomeShell> {
   Widget build(BuildContext context) {
     final screens = [
       const HomeScreen(),
-      const Center(child: Text('Meal history will appear here.')),
-      const StepsScreen(),
+      const ScanScreen(),
       const WaterScreen(),
+      const StepsScreen(),
+      const Center(child: Text('Meal history will appear here.')),
     ];
     return Scaffold(
       body: screens[index],
@@ -29,9 +31,10 @@ class _HomeShellState extends State<HomeShell> {
         onDestinationSelected: (value) => setState(() => index = value),
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Home'),
-          NavigationDestination(icon: Icon(Icons.history), label: 'History'),
-          NavigationDestination(icon: Icon(Icons.directions_walk_outlined), selectedIcon: Icon(Icons.directions_walk), label: 'Steps'),
+          NavigationDestination(icon: Icon(Icons.camera_alt_outlined), selectedIcon: Icon(Icons.camera_alt), label: 'Scan'),
           NavigationDestination(icon: Icon(Icons.water_drop_outlined), selectedIcon: Icon(Icons.water_drop), label: 'Water'),
+          NavigationDestination(icon: Icon(Icons.directions_walk_outlined), selectedIcon: Icon(Icons.directions_walk), label: 'Steps'),
+          NavigationDestination(icon: Icon(Icons.history), label: 'History'),
         ],
       ),
     );
